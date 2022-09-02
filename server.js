@@ -40,7 +40,7 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
   }
 });
 
-// LINK TO USERS ROUTER //////////////////////////
+// LINK TO USERS ROUTER s//////////////////////////
 const userRouter = require("./routes/users");
 app.use("/api/users", userRouter);
 /////////////////////////////////////////////////
@@ -50,11 +50,20 @@ const authRouter = require("./routes/auth");
 app.use("/api/auth", authRouter);
 /////////////////////////////////////////////////
 
-// LINK TO POSTS ROUTER //////////////////////////
+// LINK TO POSTS ROUTER SA//////////////////////////
 const postRouter = require("./routes/posts");
 app.use("/api/posts", postRouter);
 /////////////////////////////////////////////////
 
-app.listen(process.env.PORT, () => {
+////////////////////////////////////////////////
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
+
+app.listen(process.env.PORT || 8800, () => {
   console.log(`Server running at http://localhost:${process.env.PORT}`);
 });
